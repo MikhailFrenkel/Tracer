@@ -6,6 +6,8 @@ using System.Text;
 
 namespace Tracer
 {
+    public delegate void TraceDelegate(object sender, TracerEventArgs e);
+
     public struct TraceResult
     {
         public string MethodName;
@@ -15,6 +17,7 @@ namespace Tracer
 
     public class CustomTracer : ITracer
     {
+        public event TraceDelegate OnStopTracing; 
         private TraceResult _traceResult;
         private Stopwatch _stopwatch;
 
@@ -32,6 +35,7 @@ namespace Tracer
         {
             _stopwatch.Stop();
             _traceResult.TimeExecution = _stopwatch.ElapsedMilliseconds;
+            OnStopTracing?.Invoke(this, new TracerEventArgs(_traceResult));
         }
 
         public TraceResult GetTraceResult()
