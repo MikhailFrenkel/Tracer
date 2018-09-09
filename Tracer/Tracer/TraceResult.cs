@@ -6,24 +6,24 @@ namespace Tracer
 {
     public class TraceResult
     {
-        private readonly List<ThreadResult> _threadResults;
+        public List<ThreadResult> ThreadResults { get; }
 
         internal TraceResult()
         {
-            _threadResults = new List<ThreadResult>();
+            ThreadResults = new List<ThreadResult>();
         }
 
         internal void StartMethodTrace(MethodBase methodBase)
         {
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            if (_threadResults.Exists(x => x.Id == threadId))
+            if (ThreadResults.Exists(x => x.Id == threadId))
             {
-                _threadResults.Find(x => x.Id == threadId).StartMethodTrace(methodBase);
+                ThreadResults.Find(x => x.Id == threadId).StartMethodTrace(methodBase);
             }
             else
             {
                 ThreadResult threadResult = new ThreadResult(threadId);
-                _threadResults.Add(threadResult);
+                ThreadResults.Add(threadResult);
                 threadResult.StartMethodTrace(methodBase);
             }
         }
@@ -31,7 +31,7 @@ namespace Tracer
         internal void StopMethodTrace()
         {
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            _threadResults.Find(x => x.Id == threadId)?.StopMethodTrace();
+            ThreadResults.Find(x => x.Id == threadId)?.StopMethodTrace();
         }
     }
 }

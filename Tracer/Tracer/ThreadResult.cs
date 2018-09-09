@@ -1,14 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Tracer
 {
-    internal class ThreadResult
+    public class ThreadResult
     {
-        internal int Id { get; set; }
-        internal long Time => Methods.Sum(x => x.Time);
-        internal List<MethodResult> Methods { get; set; }
+        public int Id { get; }
+        public long Time
+        {
+            get
+            {
+                long res = 0;
+                foreach (var method in Methods)
+                {
+                    res = method.SumTime(res);
+                }
+
+                return res;
+            }
+        }
+
+        public List<MethodResult> Methods { get; }
         private readonly Stack<MethodResult> _stack;
 
         internal ThreadResult(int threadId)

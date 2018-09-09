@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace Tracer
 {
     public class CustomTracer : ITracer
     {
-        private readonly TraceResult _traceResult;
+        public TraceResult _traceResult { get; }
 
         public CustomTracer()
         {

@@ -4,13 +4,13 @@ using System.Reflection;
 
 namespace Tracer
 {
-    internal class MethodResult
+    public class MethodResult
     {
         private readonly Stopwatch _stopwatch;
-        internal string Name { get; }
-        internal string Class { get; }
-        internal long Time => _stopwatch.ElapsedMilliseconds;
-        internal List<MethodResult> Methods { get; }
+        public string Name { get; }
+        public string Class { get; }
+        public long Time => _stopwatch.ElapsedMilliseconds;
+        public List<MethodResult> Methods { get; }
 
         internal MethodResult(MethodBase methodBase)
         {
@@ -33,6 +33,16 @@ namespace Tracer
         internal void StopMethodTrace()
         {
             _stopwatch.Stop();
+        }
+
+        internal long SumTime(long res)
+        {
+            res += Time;
+            foreach (var method in Methods)
+            {
+                res = method.SumTime(res);
+            }
+            return res;
         }
     }
 }

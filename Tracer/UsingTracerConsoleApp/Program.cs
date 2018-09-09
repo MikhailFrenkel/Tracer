@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Tracer;
 
 namespace UsingTracerConsoleApp
@@ -18,10 +20,8 @@ namespace UsingTracerConsoleApp
             _threads = new List<Thread>();
             _tracer = new CustomTracer();
             MultipleThreadMethod();
-            //TraceResult traceResult = _tracer.GetTraceResult();
-            //Console.WriteLine($"Class: {traceResult.ClassName}\n" +
-            //                  $"Method: {traceResult.MethodName}\n" +
-            //                  $"Time: {traceResult.TimeExecution}ms");
+            string serialize = JsonConvert.SerializeObject(_tracer._traceResult);
+            Console.WriteLine(serialize);
             Console.ReadLine();
         }
 
