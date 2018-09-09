@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace Tracer
 {
     public class TraceResult
     {
-        private List<ThreadResult> _threadResults;
+        private readonly List<ThreadResult> _threadResults;
 
         internal TraceResult()
         {
@@ -32,7 +30,8 @@ namespace Tracer
 
         internal void StopMethodTrace()
         {
-
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            _threadResults.Find(x => x.Id == threadId)?.StopMethodTrace();
         }
     }
 }

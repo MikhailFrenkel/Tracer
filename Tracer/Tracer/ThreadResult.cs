@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Tracer
 {
@@ -11,7 +9,7 @@ namespace Tracer
         internal int Id { get; set; }
         internal long Time => Methods.Sum(x => x.Time);
         internal List<MethodResult> Methods { get; set; }
-        private Stack<MethodResult> _stack;
+        private readonly Stack<MethodResult> _stack;
 
         internal ThreadResult(int threadId)
         {

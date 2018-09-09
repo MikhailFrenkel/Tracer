@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 
 namespace Tracer
 {
     public class CustomTracer : ITracer
     {
-        private TraceResult _traceResult;
+        private readonly TraceResult _traceResult;
 
         public CustomTracer()
         {
@@ -20,20 +16,12 @@ namespace Tracer
         {
             StackFrame frame = new StackFrame(1);
             MethodBase method = frame.GetMethod();
-            int threadId = Thread.CurrentThread.ManagedThreadId;
-            
-
-            
-            //_traceResult.MethodName = method.Name;
-            //_traceResult.ClassName = method.DeclaringType?.Name;
-            //_stopwatch = new Stopwatch();
-            //_stopwatch.Start();
+            _traceResult.StartMethodTrace(method);
         }
 
         public void StopTrace()
         {
-            //_stopwatch.Stop();
-            //_traceResult.TimeExecution = _stopwatch.ElapsedMilliseconds;
+            _traceResult.StopMethodTrace();
         }
 
         public TraceResult GetTraceResult()
