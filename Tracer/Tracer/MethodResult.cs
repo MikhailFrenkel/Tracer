@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 
 namespace Tracer
 {
     internal class MethodResult
     {
+        private readonly Stopwatch _stopwatch;
         internal string Name { get; }
         internal string Class { get; }
-        internal long Time { get; }
+        internal long Time => _stopwatch.ElapsedMilliseconds;
         internal List<MethodResult> Methods { get; }
 
         internal MethodResult(MethodBase methodBase)
         {
+            _stopwatch = new Stopwatch();
             Methods = new List<MethodResult>();
             Name = methodBase.Name;
             Class = methodBase.DeclaringType?.Name;
@@ -26,12 +27,12 @@ namespace Tracer
 
         internal void StartMethodTrace()
         {
-
+            _stopwatch.Start();
         }
 
         internal void StopMethodTrace()
         {
-
+            _stopwatch.Stop();
         }
     }
 }
