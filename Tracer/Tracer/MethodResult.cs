@@ -1,14 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Tracer
 {
-    public class MethodResult
+    internal class MethodResult
     {
-        public string Name { get; set; }
-        public string Class { get; set; }
-        public long Time { get; set; }
-        public List<MethodResult> Methods { get; set; }
+        internal string Name { get; }
+        internal string Class { get; }
+        internal long Time { get; }
+        internal List<MethodResult> Methods { get; }
+
+        internal MethodResult(MethodBase methodBase)
+        {
+            Methods = new List<MethodResult>();
+            Name = methodBase.Name;
+            Class = methodBase.DeclaringType?.Name;
+        }
+
+        internal void AddMethod(MethodResult method)
+        {
+            Methods.Add(method);
+        }
+
+        internal void StartMethodTrace()
+        {
+
+        }
+
+        internal void StopMethodTrace()
+        {
+
+        }
     }
 }
