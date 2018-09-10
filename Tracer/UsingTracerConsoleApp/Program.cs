@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Tracer;
 
@@ -15,12 +12,13 @@ namespace UsingTracerConsoleApp
         private static CustomTracer _tracer;
         private static List<Thread> _threads;
 
-        static void Main(string[] args)
+        static void Main()
         {
             _threads = new List<Thread>();
             _tracer = new CustomTracer();
             MultipleThreadMethod();
-            string serialize = JsonConvert.SerializeObject(_tracer._traceResult);
+            string serialize = JsonConvert.SerializeObject(_tracer.TraceResult, Formatting.Indented);
+            File.WriteAllText("result.txt", serialize);
             Console.WriteLine(serialize);
             Console.ReadLine();
         }
@@ -43,15 +41,41 @@ namespace UsingTracerConsoleApp
         private static void SomeMethod()
         {
             _tracer.StartTrace();
-            Thread.Sleep(1000);
+            Thread.Sleep(1000);          
             Calculation();
+            if (Thread.CurrentThread.ManagedThreadId % 2 == 0)
+                SomeAction2();
+            else
+                SomeAction1();
             _tracer.StopTrace();
         }
 
         private static void Calculation()
         {
             _tracer.StartTrace();
-            Thread.Sleep(500);
+            int res = 0;
+            for (int i = 0; i < 1000; i++)
+                res += i;
+            if (Thread.CurrentThread.ManagedThreadId % 2 == 0)
+                SomeAction1();
+            else
+                SomeAction2();
+            _tracer.StopTrace();
+        }
+
+        private static void SomeAction1()
+        {
+            _tracer.StartTrace();
+            string s = "";
+            for (int i = 0; i < 30; i++)
+                s += i.ToString();
+            _tracer.StopTrace();
+        }
+
+        private static void SomeAction2()
+        {
+            _tracer.StartTrace();
+            Thread.Sleep(200);
             _tracer.StopTrace();
         }
     }
