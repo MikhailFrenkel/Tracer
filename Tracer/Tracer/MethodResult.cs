@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -33,16 +34,6 @@ namespace Tracer
         internal void StopMethodTrace()
         {
             _stopwatch.Stop();
-        }
-
-        internal long SumTime(long res)
-        {
-            res += Time;
-            foreach (var method in Methods)
-            {
-                res = method.SumTime(res);
-            }
-            return res;
         }
     }
 }

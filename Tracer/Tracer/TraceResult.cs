@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 
@@ -6,24 +8,25 @@ namespace Tracer
 {
     public class TraceResult
     {
-        public List<ThreadResult> ThreadResults { get; }
+        //TODO: ConcurrentDIctionary
+        public ConcurrentDictionary<int, ThreadResult> ThreadResults { get; }
 
         internal TraceResult()
         {
-            ThreadResults = new List<ThreadResult>();
+            ThreadResults = new ConcurrentDictionary<int, ThreadResult>();
         }
 
         internal void StartMethodTrace(MethodBase methodBase)
         {
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            if (ThreadResults.Exists(x => x.Id == threadId))
+            if (ThreadResults.ContainsKey(threadId))
             {
-                ThreadResults.Find(x => x.Id == threadId).StartMethodTrace(methodBase);
+                ThreadResults[threadId].StartMethodTrace(methodBase);
             }
             else
             {
-                ThreadResult threadResult = new ThreadResult(threadId);
-                ThreadResults.Add(threadResult);
+                ThreadResult threadResult = new ThreadResult();
+                ThreadResults.GetOrAdd(threadId, threadResult);
                 threadResult.StartMethodTrace(methodBase);
             }
         }
@@ -31,7 +34,7 @@ namespace Tracer
         internal void StopMethodTrace()
         {
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            ThreadResults.Find(x => x.Id == threadId)?.StopMethodTrace();
+            ThreadResults[threadId]?.StopMethodTrace();
         }
     }
 }
