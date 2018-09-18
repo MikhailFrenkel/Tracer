@@ -8,7 +8,6 @@ namespace Tracer
 {
     public class TraceResult
     {
-        //TODO: ConcurrentDIctionary
         public ConcurrentDictionary<int, ThreadResult> ThreadResults { get; }
 
         internal TraceResult()

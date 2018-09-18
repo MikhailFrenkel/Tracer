@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using Newtonsoft.Json;
 using Tracer;
 
 namespace UsingTracerConsoleApp
@@ -17,9 +16,14 @@ namespace UsingTracerConsoleApp
             _threads = new List<Thread>();
             _tracer = new CustomTracer();
             MultipleThreadMethod();
-            string serialize = JsonConvert.SerializeObject(_tracer.TraceResult, Formatting.Indented);
-            File.WriteAllText("result.txt", serialize);
-            Console.WriteLine(serialize);
+            XmlSerializer xmlSerializer = new XmlSerializer();
+            xmlSerializer.Serialize(_tracer.TraceResult);
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            jsonSerializer.Serialize(_tracer.TraceResult);
+            Console.WriteLine(xmlSerializer.XmlResult);
+            Console.WriteLine(jsonSerializer.JsonResult);
+            File.WriteAllText("jsonResult.txt", jsonSerializer.JsonResult);
+            File.WriteAllText("xmlResult.txt", xmlSerializer.XmlResult);
             Console.ReadLine();
         }
 

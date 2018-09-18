@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Tracer
 {
     public class ThreadResult
     {
-        //TODO: thread time?
-        public long Time { get; set; }
+        public long Time => Methods.Sum(x => x.Time);
 
         public List<MethodResult> Methods { get; }
         private readonly Stack<MethodResult> _stack;
