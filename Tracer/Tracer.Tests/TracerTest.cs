@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tracer.Tests
@@ -6,63 +8,57 @@ namespace Tracer.Tests
     [TestClass]
     public class TracerTest
     {
-        [TestMethod]
-        public void TraceResult_NotNull()
+        private TraceResult _traceResult;
+
+        [TestInitialize]
+        public void Init()
         {
             ITracer tracer = new CustomTracer();
             SomeMethod(tracer);
-            Assert.IsNotNull(tracer.TraceResult);
+            _traceResult = tracer.TraceResult;
         }
 
         [TestMethod]
         public void TraceResult_TimeMoreOrEqual100()
         {
-            ITracer tracer = new CustomTracer();
-            SomeMethod(tracer);
-            long time = tracer.TraceResult.ThreadResults[0].Time;
-            if (time < 100)
-                Assert.Fail();
-        }
-
-        [TestMethod]
-        public void TraceResult_MethodName_SomeMethod()
-        {
-            string expected = "SomeMethod";
-            ITracer tracer = new CustomTracer();
-            SomeMethod(tracer);
-            string actual = tracer.TraceResult.ThreadResults[0].Methods[0].Name;
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void TraceResult_ClassName_TracerTest()
-        {
-            string expected = "TracerTest";
-            ITracer tracer = new CustomTracer();
-            SomeMethod(tracer);
-            string actual = tracer.TraceResult.ThreadResults[0].Methods[0].Class;
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void TraceResult_ThreadId()
-        {
-            int expectedId = Thread.CurrentThread.ManagedThreadId;
-            ITracer tracer = new CustomTracer();
-            SomeMethod(tracer);
-            int actualId = tracer.TraceResult.ThreadResults[0].Id;
-            Assert.AreEqual(expectedId, actualId);
+            long expected = 100;
+            _traceResult.ThreadResults.Values.FirstOrDefault()?.Time
+                .Should().BeGreaterOrEqualTo(expected, $"time should be more or equal 100ms");
         }
 
         [TestMethod]
         public void TraceResult_ThreadTime_MoreOrEqual200()
         {
             long expected = 200;
-            ITracer tracer = new CustomTracer();
-            SomeMethod(tracer);
-            if (expected > tracer.TraceResult.ThreadResults[0].Time)
-                Assert.Fail();
+            _traceResult.ThreadResults.Values.FirstOrDefault()?.Time.Should()
+                .BeGreaterOrEqualTo(expected, "thread time should be more or equal 200ms");
         }
+
+        [TestMethod]
+        public void TraceResult_MethodName_SomeMethod()
+        {
+            string expected = nameof(SomeMethod);
+            _traceResult.ThreadResults.Values.FirstOrDefault()?.Methods[0].Name
+                .Should().Be(expected, $"method name should be {expected}");
+        }
+
+        [TestMethod]
+        public void TraceResult_ClassName_TracerTest()
+        {
+            string expected = "TracerTest";
+            _traceResult.ThreadResults.Values.FirstOrDefault()?.Methods[0].Class
+                .Should().Be(expected, $"class name should be {expected}");
+        }
+
+        [TestMethod]
+        public void TraceResult_ThreadId()
+        {
+            int expectedId = Thread.CurrentThread.ManagedThreadId;
+            _traceResult.ThreadResults.Keys
+                .Should().Contain(expectedId, $"thread result should contain {expectedId} id");
+        }
+
+
 
         private void SomeMethod(ITracer tracer)
         {
