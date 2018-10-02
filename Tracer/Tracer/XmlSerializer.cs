@@ -8,9 +8,7 @@ namespace Tracer
 {
     public class XmlSerializer : ISerialize
     {
-        public string XmlResult { get; private set; }
-
-        public void Serialize(TraceResult value)
+        public string Serialize(TraceResult value)
         {
             var document = new XDocument();
             var root = new XElement("root");
@@ -30,7 +28,7 @@ namespace Tracer
             }
 
             document.Add(root);
-            XmlResult = document.ToString();
+            return document.ToString();
         }
 
         private XElement MethodResultToXml(MethodResult method)

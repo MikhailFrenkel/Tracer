@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Tracer
 {
-    interface ISerialize
+    public interface IOutput
     {
-        string Serialize(TraceResult value);
+        void Output(string value);
     }
 }

@@ -16,14 +16,19 @@ namespace UsingTracerConsoleApp
             _threads = new List<Thread>();
             _tracer = new CustomTracer();
             MultipleThreadMethod();
+
             XmlSerializer xmlSerializer = new XmlSerializer();
-            xmlSerializer.Serialize(_tracer.TraceResult);
+            string xmlResult = xmlSerializer.Serialize(_tracer.TraceResult);
             JsonSerializer jsonSerializer = new JsonSerializer();
-            jsonSerializer.Serialize(_tracer.TraceResult);
-            Console.WriteLine(xmlSerializer.XmlResult);
-            Console.WriteLine(jsonSerializer.JsonResult);
-            File.WriteAllText("jsonResult.txt", jsonSerializer.JsonResult);
-            File.WriteAllText("xmlResult.txt", xmlSerializer.XmlResult);
+            string jsonResult = jsonSerializer.Serialize(_tracer.TraceResult);
+
+            FileOutput xmlOutput = new FileOutput("XmlResult.txt");
+            xmlOutput.Output(xmlResult);
+            FileOutput jsonOutput = new FileOutput("JsonResult.txt");
+            jsonOutput.Output(jsonResult);
+            ConsoleOutput output = new ConsoleOutput();
+            output.Output(xmlResult + "\n" + jsonResult);
+
             Console.ReadLine();
         }
 
@@ -73,6 +78,7 @@ namespace UsingTracerConsoleApp
             string s = "";
             for (int i = 0; i < 30; i++)
                 s += i.ToString();
+            Thread.Sleep(100);
             _tracer.StopTrace();
         }
 

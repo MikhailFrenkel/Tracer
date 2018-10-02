@@ -7,11 +7,9 @@ namespace Tracer
 {
     public class JsonSerializer : ISerialize
     {
-        public string JsonResult { get; private set; }
-
-        public void Serialize(TraceResult value)
+        public string Serialize(TraceResult value)
         {
-            JsonResult = JsonConvert.SerializeObject(value, Formatting.Indented);
+            return JsonConvert.SerializeObject(value, Formatting.Indented);
         }
     }
 }
